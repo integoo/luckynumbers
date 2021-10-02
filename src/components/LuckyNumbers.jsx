@@ -7,7 +7,16 @@ class LuckyNumbers extends React.Component{
         super(props)
 
         this.state={
-            randomNumbers:[]
+            randomNumbers:[],
+            ip:"",
+            city:"",
+            region:"",
+            country:"",
+            continent:"",
+            latitude: "",
+            longitude: "",
+            currency: "",
+            currencyConverter: "",
         }
     }
 
@@ -18,6 +27,60 @@ class LuckyNumbers extends React.Component{
             const data = await response.json()
             // alert(JSON.stringify(data))
             alert(data.geoplugin_request+" "+data.geoplugin_city+" "+data.geoplugin_regionName+" "+data.geoplugin_countryName+" "+data.geoplugin_continentName+" "+data.geoplugin_latitude+" "+data.geoplugin_longitude+" "+data.geoplugin_currencyCode+" "+data.geoplugin_currencyConverter)
+            this.setState({
+                ip: data.geoplugin_request,
+                city: data.geoplugin_city,
+                region: data.geoplugin_regionName,
+                country: data.geoplugin_countryName,
+                continent: data.geoplugin_continentName,
+                latitude: data.geoplugin_latitude,
+                longitude: data.geoplugin_longitude, 
+                currency: data.geoplugin_currencyCode,
+                currencyConverter: data.geoplugin_currencyConverter,
+            },() => this.handlePostAccesos())
+        }catch(error){
+            console.log(error.message)
+            alert(error.message)
+        }
+    }
+
+    handlePostAccesos = async() =>{
+        const ip = this.state.ip 
+        const city = this.state.city 
+        const region = this.state.region 
+        const country = this.state.country 
+        const continent = this.state.continent 
+        const latitude = this.state.latitude 
+        const longitude = this.state.longitude 
+        const currency = this.state.currency 
+        const currencyConverter = this.state.currencyConverter
+
+        const url = `http://localhost:4010/api/grabaaccesos`
+
+        const json={
+            ip: ip,
+            city: city,
+            region: region,
+            country: country,
+            continent: continent,
+            latitude: latitude,
+            longitude: longitude,
+            currency: currency,
+            currencyConverter: currencyConverter
+        }
+
+        try{
+            const response = await fetch(url,{
+                method: "POST",
+                body: JSON.stringify(json),
+                headers:{
+                    "Content-Type": "application/json"
+                }
+            })
+
+            const data = await response.json()
+            alert(data.message)
+
         }catch(error){
             console.log(error.message)
             alert(error.message)
